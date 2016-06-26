@@ -66,6 +66,10 @@
   <property name="jps-plugin.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps/jps-plugin.jar"/>
   <property name="jps-shared.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps-shared.jar"/>
 
+  <!-- JPS classes must use Java 6, see https://github.com/carymrobbins/intellij-haskforce/issues/278 -->
+  <property name="jps.jdk.source" value="1.6"/>
+  <property name="jps.jdk.target" value="1.8"/>
+
   <!-- Set jdk.home if not specified in build.properties. -->
   <condition property="jdk.home" value="${java.home}/..">
     <not>
@@ -253,7 +257,7 @@
       <patternset refid="excluded.from.compilation.jps-shared"/>
     </scalac>
 
-    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
+    <javac2 source="${jps.jdk.source}" target="${jps.jdk.target}" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
       <compilerarg line="${compiler.args.jps-shared}"/>
       <bootclasspath refid="jps-shared.module.bootclasspath"/>
       <classpath refid="jps-shared.module.production.classpath"/>
@@ -360,6 +364,101 @@
     <delete dir="${macros.output.dir}"/>
   </target>
 
+  <!-- Module jps-plugin -->
+
+  <dirname property="module.jps-plugin.basedir" file="${ant.file}"/>
+
+  <property name="module.jdk.home.jps-plugin" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jps-plugin" value="${project.jdk.classpath}"/>
+
+  <property name="compiler.args.jps-plugin" value="-encoding UTF-8 ${compiler.args}"/>
+
+  <property name="jps-plugin.output.dir" value="${module.jps-plugin.basedir}/out/production/jps-plugin"/>
+  <property name="jps-plugin.testoutput.dir" value="${module.jps-plugin.basedir}/out/test/jps-plugin"/>
+
+  <path id="jps-plugin.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="jps-plugin.module.production.classpath">
+    <path refid="${module.jdk.classpath.jps-plugin}"/>
+    <pathelement path="${jps-shared.output.dir}"/>
+    <pathelement location="${scala-compiler.jar}"/>
+    <pathelement location="${scala-reflect.jar}"/>
+    <pathelement location="${scala-library.jar}"/>
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+
+  <path id="jps-plugin.runtime.production.module.classpath">
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+
+  <path id="jps-plugin.module.classpath">
+    <path refid="${module.jdk.classpath.jps-plugin}"/>
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+
+  <path id="jps-plugin.runtime.module.classpath">
+    <pathelement location="${jps-plugin.testoutput.dir}"/>
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.jps-plugin">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.jps-plugin">
+    <patternset refid="excluded.from.module.jps-plugin"/>
+  </patternset>
+
+  <path id="jps-plugin.module.sourcepath">
+    <dirset dir="${module.jps-plugin.basedir}/jps-plugin">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.jps-plugin" depends="compile.module.jps-plugin.production,compile.module.jps-plugin.tests" description="Compile module jps-plugin"/>
+
+  <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
+    <mkdir dir="${jps-plugin.output.dir}"/>
+
+    <scalac encoding="UTF8" destdir="${jps-plugin.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+      <bootclasspath refid="jps-plugin.module.bootclasspath"/>
+      <classpath refid="jps-plugin.module.production.classpath"/>
+      <src refid="jps-plugin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jps-plugin"/>
+    </scalac>
+
+    <javac2 source="${jps.jdk.source}" target="${jps.jdk.target}" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
+      <compilerarg line="${compiler.args.jps-plugin}"/>
+      <bootclasspath refid="jps-plugin.module.bootclasspath"/>
+      <classpath refid="jps-plugin.module.production.classpath"/>
+      <src refid="jps-plugin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jps-plugin"/>
+    </javac2>
+
+    <copy todir="${jps-plugin.output.dir}">
+      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile.module.jps-plugin.tests" depends="register.custom.compilers,compile.module.jps-plugin.production" description="compile module jps-plugin; test classes" unless="skip.tests"/>
+
+  <target name="clean.module.jps-plugin" description="cleanup module">
+    <delete dir="${jps-plugin.output.dir}"/>
+    <delete dir="${jps-plugin.testoutput.dir}"/>
+  </target>
 
   <!-- Module HaskForce -->
 
@@ -379,6 +478,7 @@
   <path id="haskforce.module.production.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement path="${jps-shared.output.dir}"/>
+    <pathelement path="${jps-plugin.output.dir}"/>
     <pathelement path="${macros.output.dir}"/>
     <fileset dir="lib">
       <include name="**/*.jar"/>
@@ -427,7 +527,7 @@
   </path>
 
 
-  <target name="compile.module.haskforce" depends="compile.module.macros.production,compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
+  <target name="compile.module.haskforce" depends="compile.module.macros.production,compile.module.jps-plugin.production,compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
 
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
@@ -561,102 +661,6 @@
       </fileset>
     </copy>
     <zip basedir="${plugin.zip.path}" destfile="${plugin.zip.path.output}"/>
-  </target>
-
-  <!-- Module jps-plugin -->
-
-  <dirname property="module.jps-plugin.basedir" file="${ant.file}"/>
-
-  <property name="module.jdk.home.jps-plugin" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.jps-plugin" value="${project.jdk.classpath}"/>
-
-  <property name="compiler.args.jps-plugin" value="-encoding UTF-8 ${compiler.args}"/>
-
-  <property name="jps-plugin.output.dir" value="${module.jps-plugin.basedir}/out/production/jps-plugin"/>
-  <property name="jps-plugin.testoutput.dir" value="${module.jps-plugin.basedir}/out/test/jps-plugin"/>
-
-  <path id="jps-plugin.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-
-  <path id="jps-plugin.module.production.classpath">
-    <path refid="${module.jdk.classpath.jps-plugin}"/>
-    <pathelement path="${jps-shared.output.dir}"/>
-    <pathelement location="${scala-compiler.jar}"/>
-    <pathelement location="${scala-reflect.jar}"/>
-    <pathelement location="${scala-library.jar}"/>
-    <fileset dir="${lib.dir}" includes="**/*.jar"/>
-  </path>
-
-  <path id="jps-plugin.runtime.production.module.classpath">
-    <pathelement location="${jps-plugin.output.dir}"/>
-  </path>
-
-  <path id="jps-plugin.module.classpath">
-    <path refid="${module.jdk.classpath.jps-plugin}"/>
-    <pathelement location="${jps-plugin.output.dir}"/>
-  </path>
-
-  <path id="jps-plugin.runtime.module.classpath">
-    <pathelement location="${jps-plugin.testoutput.dir}"/>
-    <pathelement location="${jps-plugin.output.dir}"/>
-  </path>
-
-
-  <patternset id="excluded.from.module.jps-plugin">
-    <patternset refid="ignored.files"/>
-  </patternset>
-
-  <patternset id="excluded.from.compilation.jps-plugin">
-    <patternset refid="excluded.from.module.jps-plugin"/>
-  </patternset>
-
-  <path id="jps-plugin.module.sourcepath">
-    <dirset dir="${module.jps-plugin.basedir}/jps-plugin">
-      <include name="src"/>
-      <include name="resources"/>
-    </dirset>
-  </path>
-
-
-  <target name="compile.module.jps-plugin" depends="compile.module.jps-plugin.production,compile.module.jps-plugin.tests" description="Compile module jps-plugin"/>
-
-  <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
-    <mkdir dir="${jps-plugin.output.dir}"/>
-
-    <scalac encoding="UTF8" destdir="${jps-plugin.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
-      <bootclasspath refid="jps-plugin.module.bootclasspath"/>
-      <classpath refid="jps-plugin.module.production.classpath"/>
-      <src refid="jps-plugin.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.jps-plugin"/>
-    </scalac>
-
-    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
-      <compilerarg line="${compiler.args.jps-plugin}"/>
-      <bootclasspath refid="jps-plugin.module.bootclasspath"/>
-      <classpath refid="jps-plugin.module.production.classpath"/>
-      <src refid="jps-plugin.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.jps-plugin"/>
-    </javac2>
-
-    <copy todir="${jps-plugin.output.dir}">
-      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/resources">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-
-  <target name="compile.module.jps-plugin.tests" depends="register.custom.compilers,compile.module.jps-plugin.production" description="compile module jps-plugin; test classes" unless="skip.tests"/>
-
-  <target name="clean.module.jps-plugin" description="cleanup module">
-    <delete dir="${jps-plugin.output.dir}"/>
-    <delete dir="${jps-plugin.testoutput.dir}"/>
   </target>
 
   <target name="resolve" depends="init-ivy" description="--> retrieve dependencies with ivy">
