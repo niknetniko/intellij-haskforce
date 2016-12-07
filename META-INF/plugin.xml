@@ -337,6 +337,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Haskell support -->
+    <projectTemplatesFactory implementation="com.haskforce.haskell.project.template.HaskellProjectTemplatesFactory"/>
     <internalFileTemplate name="Haskell Module"/>
     <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
     <sdkType implementation="com.haskforce.HaskellSdkType"/>

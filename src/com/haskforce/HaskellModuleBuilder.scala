@@ -37,7 +37,14 @@ import com.haskforce.utils.{GuiUtil, Logging}
 
 /** Manages the creation of Haskell modules via interaction with the user. */
 class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {
+
   val LOG = Logger.getInstance(getClass)
+
+  /**
+   * Hack to avoid this builder appearing in the top-level project wizard.
+   * Prefer HaskellProjectTemplatesFactory
+   */
+  override def isAvailable: Boolean = false
 
   @throws(classOf[ConfigurationException])
   override def setupRootModel(rootModel: ModifiableRootModel) {
