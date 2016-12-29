@@ -3,6 +3,7 @@ package com.haskforce.eta.project.template
 import java.io.File
 import javax.swing.JComponent
 
+import com.haskforce.utils.{ExecUtil, GuiUtil}
 import com.intellij.ide.util.projectWizard.{JavaModuleBuilder, ModuleWizardStep, SettingsStep}
 import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.ui.{Messages, TextFieldWithBrowseButton}
@@ -48,8 +49,14 @@ class EtaModuleBuilder extends JavaModuleBuilder {
       result
     }
 
-    private lazy val etaPathField = new TextFieldWithBrowseButton()
-    private lazy val epmPathField = new TextFieldWithBrowseButton()
+    private lazy val etaPathField = newPathField("eta")
+    private lazy val epmPathField = newPathField("epm")
 
+    private def newPathField(name: String): TextFieldWithBrowseButton = {
+      val field = new TextFieldWithBrowseButton()
+      GuiUtil.addFolderListener(field, name)
+      Option(ExecUtil.locateExecutableByGuessing(name)).foreach { field.setText }
+      field
+    }
   }
 }

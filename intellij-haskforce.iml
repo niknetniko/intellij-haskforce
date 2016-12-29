@@ -26,9 +26,6 @@
     <orderEntry type="module-library">
       <library name="IvyIDEA">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.7.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-parser-combinators_2.11/bundles/scala-parser-combinators_2.11-1.0.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/jline/jline/jars/jline-2.12.1.jar!/" />
@@ -55,6 +52,11 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.errorprone/error_prone_annotations/jars/error_prone_annotations-2.0.12.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.j2objc/j2objc-annotations/jars/j2objc-annotations-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.codehaus.mojo/animal-sniffer-annotations/jars/animal-sniffer-annotations-1.14.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.chuusai/shapeless_2.11/bundles/shapeless_2.11-2.3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.8.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.typelevel/macro-compat_2.11/jars/macro-compat_2.11-1.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.8.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.8.jar!/" />
         </CLASSES>
         <JAVADOC>
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/javadocs/paradise_2.11.6-2.1.0-M5-javadoc.jar!/" />
@@ -93,6 +95,7 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.errorprone/error_prone_annotations/sources/error_prone_annotations-2.0.12-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.j2objc/j2objc-annotations/sources/j2objc-annotations-1.1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.codehaus.mojo/animal-sniffer-annotations/sources/animal-sniffer-annotations-1.14-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ideaLibSources/shapeless_2.11-2.3.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

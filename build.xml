@@ -248,7 +248,7 @@
   <target name="compile.module.jps-shared.production" depends="register.custom.compilers" description="Compile module jps-shared; production classes">
     <mkdir dir="${jps-shared.output.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${jps-shared.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+    <scalac encoding="UTF8" destdir="${jps-shared.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}" addparams="-Xexperimental">
       <bootclasspath refid="jps-shared.module.bootclasspath"/>
       <classpath refid="jps-shared.module.production.classpath"/>
       <src refid="jps-shared.module.sourcepath"/>
@@ -343,7 +343,7 @@
   <target name="compile.module.macros.production" depends="register.custom.compilers" description="Compile module macros; production classes">
     <mkdir dir="${macros.output.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${macros.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+    <scalac encoding="UTF8" destdir="${macros.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}" addparams="-Xexperimental">
       <bootclasspath refid="macros.module.bootclasspath"/>
       <classpath refid="macros.module.production.classpath"/>
       <src refid="macros.module.sourcepath"/>
@@ -434,7 +434,7 @@
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${haskforce.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+    <scalac encoding="UTF8" destdir="${haskforce.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}" addparams="-Xexperimental">
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.production.classpath"/>
       <src refid="haskforce.module.sourcepath"/>
@@ -476,7 +476,7 @@
   <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production,plugin.build.jar.jps-shared" description="compile module HaskForce; test classes" unless="skip.tests">
     <mkdir dir="${haskforce.testoutput.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${haskforce.testoutput.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+    <scalac encoding="UTF8" destdir="${haskforce.testoutput.dir}" fork="true" addparams="-Xplugin:${paradise.jar}" addparams="-Xexperimental">
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.classpath"/>
       <classpath refid="haskforce.module.tests.classpath"/>
@@ -627,7 +627,7 @@
   <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
     <mkdir dir="${jps-plugin.output.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${jps-plugin.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+    <scalac encoding="UTF8" destdir="${jps-plugin.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}" addparams="-Xexperimental">
       <bootclasspath refid="jps-plugin.module.bootclasspath"/>
       <classpath refid="jps-plugin.module.production.classpath"/>
       <src refid="jps-plugin.module.sourcepath"/>
