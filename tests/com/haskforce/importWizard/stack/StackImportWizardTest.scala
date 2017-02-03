@@ -8,7 +8,7 @@ import scalaz.syntax.id._
 import com.intellij.ide.projectWizard.ProjectWizardTestCase
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
+import com.intellij.openapi.roots.{ContentEntry, ModuleRootManager, ProjectRootManager}
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
@@ -108,10 +108,11 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
         getTestSourceDirPaths(m),
         s"$canonicalProjectDir/test"
       )
-      //assertSameElements(
-      //  getExcludedRootPaths(m),
-      //  s"$canonicalProjectDir/.stack-work"
-      //)
+      assertSameElements(
+        getExcludePaths(m),
+        s"$canonicalProjectDir/.stack-work",
+        s"$canonicalProjectDir/out"
+      )
     }
   }
 
@@ -119,6 +120,10 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
 
   private def newImportProvider() = {
     new StackProjectImportProvider(new StackProjectImportBuilder)
+  }
+
+  private def getContentRoots(m: Module): util.List[ContentEntry] = {
+    util.Arrays.asList(ModuleRootManager.getInstance(m).getContentEntries: _*)
   }
 
   private def getSourceRoots(m: Module, typ: SourceRootType): util.List[VirtualFile] = {
@@ -137,9 +142,7 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
     getSourceRootPaths(m, JavaSourceRootType.TEST_SOURCE)
   }
 
-  private def getExcludedRoots(m: Module): util.List[VirtualFile] = {
-    util.Arrays.asList(ModuleRootManager.getInstance(m).getExcludeRoots: _*)
+  private def getExcludePaths(m: Module): util.List[String] = {
+    getContentRoots(m).flatMap(_.getExcludeFolderUrls).map(_.stripPrefix("file://"))
   }
-
-  private def getExcludedRootPaths(m: Module): util.List[String] = getExcludedRoots(m).map(_.getPath)
 }
